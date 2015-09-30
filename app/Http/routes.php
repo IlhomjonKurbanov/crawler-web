@@ -15,11 +15,19 @@ Route::get('/', 'WelcomeController@index');
 
 Route::get('home', 'HomeController@index');
 
-Route::get('redis', 'RedisController@connectRedis');
-
 Route::get('getImagesByMall', 'RedisController@getImagesByMall');
 
 Route::get('getMallByCity', 'RedisController@getMallByCity');
+
+Route::get('getCityByCountry', 'RedisController@getCityByCountry');
+
+Route::get('getCountry', 'RedisController@getCountry');
+
+Route::get('getImagesById', 'RedisController@getImagesById');
+
+Route::get('report', 'RedisController@index');
+
+Route::get('image', 'RedisController@getImagesById');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

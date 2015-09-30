@@ -15,12 +15,38 @@ class RedisController extends Controller {
      * @return Response
      */
     public function index() {
-        //
+        return view('redis/report');
     }
 
     public function connectRedis() {
         $redis = Redis::connection();
         return $redis;
+    }
+
+    public function getCountry() {
+        $redis = $this->connectRedis();
+        $total = $redis->get('totalMall');
+        $returnArr = array();
+        for ($i = 1; $i <= $total; $i++) {
+            $item = $redis->hget('mall:' . $i, 'country');
+            $returnArr[] = $item;
+        }
+        return response()->json(array_unique($returnArr));
+    }
+
+    public function getCityByCountry(Request $request) {
+        $redis = $this->connectRedis();
+        $country = $request->input('country');
+        $total = $redis->get('totalMall');
+        $returnArr = array();
+        for ($i = 1; $i <= $total; $i++) {
+            $item = $redis->hget('mall:' . $i, 'country');
+            if (!empty($item) && $item == $country) {
+                $items = $redis->hget('mall:' . $i, 'city');
+                $returnArr[] = $items;
+            }
+        }
+        return response()->json(array_unique($returnArr));
     }
 
     public function getMallByCity(Request $request) {
@@ -29,9 +55,13 @@ class RedisController extends Controller {
         $total = $redis->get('totalMall');
         $returnArr = array();
         for ($i = 1; $i <= $total; $i++) {
-            $item = $redis->hGetAll('mall:' . $i);
-            if (isset($item['city']) && $item['city'] == $city) {
-                $returnArr[] = $item;
+            $item = $redis->hget('mall:' . $i, 'city');
+            if (!empty($item) && $item == $city) {
+                $items = $redis->hmget('mall:' . $i, 'mall_id', 'name');
+                $itemArr = array();
+                $itemArr['mall_id'] = $items[0];
+                $itemArr['name'] = $items[1];
+                $returnArr[] = $itemArr;
             }
         }
         return response()->json($returnArr);
@@ -41,18 +71,29 @@ class RedisController extends Controller {
         $redis = $this->connectRedis();
         $mallId = $request->input('mall_id');
         $total = $redis->get('totalDownload');
+        // echo $total;
         $returnArr = array();
+
         for ($i = 1; $i <= $total; $i++) {
-            $item = $redis->hGetAll('image:' . $i);
-            if (isset($item['mall_id']) && $item['mall_id'] == $mallId) {
-                $returnArr[] = $item;
+            $item = $redis->hget('image:' . $i, 'mall_id');
+            if (!empty($item) && $item == $mallId) {
+                $items = $redis->hmget('image:' . $i, 'url', 'image_id', 'latitude', 'longitude');
+                $itemArr = array();
+                $itemArr['url'] = $items[0];
+                $itemArr['image_id'] = $items[1];
+                $itemArr['latitude'] = $items[2];
+                $itemArr['longitude'] = $items[3];
+                $returnArr[] = $itemArr;
             }
         }
         return response()->json($returnArr);
     }
 
-    public function getCityByCountry() {
+    public function getImagesById(Request $request) {
         $redis = $this->connectRedis();
+        $id = $request->input('image_id');
+        $item = $redis->hGetAll('image:' . $id);
+        return view('redis/view', array('data' => $item));
     }
 
 }
