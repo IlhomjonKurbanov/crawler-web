@@ -90,9 +90,11 @@
 
     <body>
         <div id="panel">
+            <img id="loading" src="{{asset('src/ajax-loader.gif')}}" />
             <div class="selector">
                 <span>Country</span>
                 <select name="" id="country">
+                    <option value="">Please select</option>
                 </select>
             </div>
             <!--            <div class="selector">
@@ -107,15 +109,17 @@
             <div class="selector">
                 <span>City</span>
                 <select name="" id="city">
-
+                    <option value="">Please select</option>
                 </select>
             </div>
         </div>
         <div id="content">
+
             <div id="mall">
                 <div id="markerlist">
 
                 </div>
+                <h4>List malls</h4>
                 <ul id="mall-list">
 
                 </ul>
@@ -130,37 +134,45 @@
 </html>
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        map = new GMaps({
-            div: '#main_map',
-            lat: 40.088344977,
-            lng: -75.393434309,
-        });
+$(document).ready(function () {
+    $('#loading').hide();
+    map = new GMaps({
+        div: '#main_map',
+        lat: 40.088344977,
+        lng: -75.393434309,
     });
-    window.onload = function () {
-        var map;
+});
+window.onload = function () {
+    var map;
 
-        $.ajax({
-            type: 'GET',
-            url: '<?php echo url('getCountry') ?>',
-            dataType: 'json',
-            success: function (response)
-            {
-                $.each(response, function (key, value) {
-                    var html = '<option value="' + value + '">' + value + '</option>';
-                    $('#country').append(html);
-                });
-            }
-        });
-    }
+    $.ajax({
+        beforeSend: function (xhr) {
+            $('#loading').show();
+        },
+        type: 'GET',
+        url: '<?php echo url('getCountry') ?>',
+        dataType: 'json',
+        success: function (response)
+        {
+            $.each(response, function (key, value) {
+                var html = '<option value="' + value + '">' + value + '</option>';
+                $('#country').append(html);
+            });
+            $('#loading').hide();
+        }
+    });
+}
 
-    $(document).ready(function () {
-        $(document).on('change', '#country', function (e) {
-            e.preventDefault();
-            var country = $(this).val();
+$(document).ready(function () {
+    $(document).on('change', '#country', function (e) {
+        e.preventDefault();
+        var country = $(this).val();
+        if (country !== '') {
             $.ajax({
                 beforeSend: function (xhr) {
+                    $('#loading').show();
                     $('#city').empty();
+                    $('#city').append('<option value="">Please select</option>');
                 },
                 type: 'GET',
                 url: '<?php echo url('getCityByCountry') ?>',
@@ -171,16 +183,20 @@
                     $.each(response, function (key, value) {
                         var html = '<option value="' + value + '">' + value + '</option>';
                         $('#city').append(html);
+                        $('#loading').hide();
                     });
                 }
             });
-        });
+        }
+    });
 
-        $(document).on('change', '#city', function (e) {
-            e.preventDefault();
-            var city = $(this).val();
+    $(document).on('change', '#city', function (e) {
+        e.preventDefault();
+        var city = $(this).val();
+        if (city !== '') {
             $.ajax({
                 beforeSend: function (xhr) {
+                    $('#loading').show();
                     $('#mall-list').empty();
                 },
                 type: 'GET',
@@ -193,59 +209,64 @@
                         var html = '<a href=""><li id="' + this.mall_id + '">' + this.name + '</li></a>';
                         $('#mall-list').append(html);
                     });
+                    $('#loading').hide();
                 }
             });
-        });
+        }
+    });
 
-        $(document).on('click', '#mall-list li', function (e) {
-            e.preventDefault();
-            var mall_id = $(this).attr('id');
-            var map;
+    $(document).on('click', '#mall-list li', function (e) {
+        e.preventDefault();
+        var mall_id = $(this).attr('id');
+        var map;
 
-            $.ajax({
-                type: 'GET',
-                url: '<?php echo url('getImagesByMall') ?>',
-                dataType: 'json',
-                data: {mall_id: mall_id},
-                success: function (response)
-                {
-                    map = new GMaps({
-                        div: '#main_map',
-                        lat: 40.088344977,
-                        lng: -75.393434309,
-                        markerClusterer: function (map) {
-                            options = {
-                                gridSize: 40
-                            }
-
-                            return new MarkerClusterer(map, [], options);
+        $.ajax({
+            beforeSend: function (xhr) {
+                $('#loading').show();
+            },
+            type: 'GET',
+            url: '<?php echo url('getImagesByMall') ?>',
+            dataType: 'json',
+            data: {mall_id: mall_id},
+            success: function (response)
+            {
+                map = new GMaps({
+                    div: '#main_map',
+                    lat: 40.088344977,
+                    lng: -75.393434309,
+                    markerClusterer: function (map) {
+                        options = {
+                            gridSize: 30
                         }
-                    });
+
+                        return new MarkerClusterer(map, [], options);
+                    }
+                });
 
 
-                    var markers_data = [];
-                    var url = "http://128.199.215.18/public/index.php/image?image_id=";
-                    if (response.length > 0) {
-                        for (var i = 0; i < response.length; i++) {
-                            if (response[i].latitude !== '' && response[i].longitude !== '') {
-                                markers_data.push({
-                                    lat: response[i].latitude,
-                                    lng: response[i].longitude,
-                                    infoWindow: {
-                                        
-                                        content: '<a href='+url+response[i].image_id+'><img src=' + response[i].url + ' /></a>'
-                                    },
-                                });
-                            }
+                var markers_data = [];
+                var url = "http://128.199.215.18/public/index.php/image?image_id=";
+                if (response.length > 0) {
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].latitude !== '' && response[i].longitude !== '') {
+                            markers_data.push({
+                                lat: response[i].latitude,
+                                lng: response[i].longitude,
+                                infoWindow: {
+                                    content: '<a href=' + url + response[i].image_id + '><img src=' + response[i].url + ' /></a>'
+                                },
+                            });
                         }
                     }
-                    map.addMarkers(markers_data);
                 }
-            });
+                map.addMarkers(markers_data);
+                $('#loading').hide();
+            }
         });
-
-
     });
+
+
+});
 
 
 </script>
