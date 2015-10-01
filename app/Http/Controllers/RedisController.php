@@ -57,10 +57,12 @@ class RedisController extends Controller {
         for ($i = 1; $i <= $total; $i++) {
             $item = $redis->hget('mall:' . $i, 'city');
             if (!empty($item) && $item == $city) {
-                $items = $redis->hmget('mall:' . $i, 'mall_id', 'name');
+                $items = $redis->hmget('mall:' . $i, 'mall_id', 'name', 'lat', 'lng');
                 $itemArr = array();
                 $itemArr['mall_id'] = $items[0];
                 $itemArr['name'] = $items[1];
+                $itemArr['lat'] = $items[2];
+                $itemArr['lng'] = $items[3];
                 $returnArr[] = $itemArr;
             }
         }

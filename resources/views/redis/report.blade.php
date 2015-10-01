@@ -207,7 +207,7 @@ $(document).ready(function () {
                 success: function (response)
                 {
                     $.each(response, function () {
-                        var html = '<a href=""><li id="' + this.mall_id + '">' + this.name + '</li></a>';
+                        var html = '<a href=""><li id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</li></a>';
                         $('#mall-list').append(html);
                     });
                     $('#loading').hide();
@@ -220,6 +220,8 @@ $(document).ready(function () {
         e.preventDefault();
         var mall_id = $(this).attr('id');
         var map;
+        var lat = $(this).attr('lat');
+        var lng = $(this).attr('lng');
 
         $.ajax({
             beforeSend: function (xhr) {
@@ -233,8 +235,8 @@ $(document).ready(function () {
             {
                 map = new GMaps({
                     div: '#main_map',
-                    lat: 40.088344977,
-                    lng: -75.393434309,
+                    lat: lat,
+                    lng: lng,
                     markerClusterer: function (map) {
                         options = {
                             gridSize: 30
