@@ -171,6 +171,7 @@ $(document).ready(function () {
             $.ajax({
                 beforeSend: function (xhr) {
                     $('#loading').show();
+                    $('#mall-list').empty();
                     $('#city').empty();
                     $('#city').append('<option value="">Please select</option>');
                 },
