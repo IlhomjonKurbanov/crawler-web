@@ -68,6 +68,26 @@ class RedisController extends Controller {
         }
         return response()->json($returnArr);
     }
+    
+    public function getMallByCountry(Request $request) {
+        $redis = $this->connectRedis();
+        $country = $request->input('country');
+        $total = $redis->get('totalMall');
+        $returnArr = array();
+        for ($i = 1; $i <= $total; $i++) {
+            $item = $redis->hget('mall:' . $i, 'city');
+            if (!empty($item) && $item == $country) {
+                $items = $redis->hmget('mall:' . $i, 'mall_id', 'name', 'lat', 'lng');
+                $itemArr = array();
+                $itemArr['mall_id'] = $items[0];
+                $itemArr['name'] = $items[1];
+                $itemArr['lat'] = $items[2];
+                $itemArr['lng'] = $items[3];
+                $returnArr[] = $itemArr;
+            }
+        }
+        return response()->json($returnArr);
+    }
 
     public function getImagesByMall(Request $request) {
         $redis = $this->connectRedis();

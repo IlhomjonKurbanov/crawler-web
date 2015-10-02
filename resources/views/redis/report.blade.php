@@ -239,19 +239,23 @@ $(document).ready(function () {
                     lng: lng,
                     markerClusterer: function (map) {
                         options = {
-                            gridSize: 30
+                            gridSize: 30,
+                            maxZoom: 14
                         }
 
                         return new MarkerClusterer(map, [], options);
-                    }
-                });
 
+                    },
+                  
+                    
+                });
 
                 var markers_data = [];
                 var url = "http://128.199.215.18/public/index.php/image?image_id=";
                 if (response.length > 0) {
                     for (var i = 0; i < response.length; i++) {
                         if (response[i].latitude !== '' && response[i].longitude !== '') {
+                            
                             markers_data.push({
                                 lat: response[i].latitude,
                                 lng: response[i].longitude,
@@ -263,6 +267,7 @@ $(document).ready(function () {
                     }
                 }
                 map.addMarkers(markers_data);
+               
                 $('#loading').hide();
             }
         });
