@@ -239,7 +239,7 @@ $(document).ready(function () {
                     lng: lng,
                     markerClusterer: function (map) {
                         options = {
-                            gridSize: 30,
+                            gridSize: 40,
                             maxZoom: 14
                         }
 
@@ -260,7 +260,7 @@ $(document).ready(function () {
                                 lat: response[i].latitude,
                                 lng: response[i].longitude,
                                 infoWindow: {
-                                    content: '<a href=' + url + response[i].image_id + '><img src=' + response[i].url + ' /></a>'
+                                    content: '<img src=' + response[i].url + ' /><br><a href=' + url + response[i].image_id + '>View detail</a>'
                                 },
                             });
                         }
