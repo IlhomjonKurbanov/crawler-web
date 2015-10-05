@@ -260,7 +260,8 @@ $(document).ready(function () {
                                 lat: response[i].latitude,
                                 lng: response[i].longitude,
                                 infoWindow: {
-                                    content: '<img src=' + response[i].url + ' /><br><a href=' + url + response[i].image_id + '>View detail</a>'
+                                    content: '<img src=' + response[i].url + ' height="150" width="150"/><br><a href=' + url + response[i].image_id + '>View detail</a>'
+                                   // content: "<div style='background-image: url("+response[i].url+"); height=100px; width=100px'></div><br><a href=' + url + response[i].image_id + '>View detail</a>',
                                 },
                             });
                         }
