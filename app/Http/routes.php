@@ -21,6 +21,8 @@ Route::get('getMallByCity', 'RedisController@getMallByCity');
 
 Route::get('getCityByCountry', 'RedisController@getCityByCountry');
 
+Route::get('getMallByCountry', 'RedisController@getMallByCountry');
+
 Route::get('getCountry', 'RedisController@getCountry');
 
 Route::get('getImagesById', 'RedisController@getImagesById');

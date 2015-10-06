@@ -181,11 +181,33 @@ $(document).ready(function () {
                 data: {country: country},
                 success: function (response)
                 {
-                    $.each(response, function (key, value) {
-                        var html = '<option value="' + value + '">' + value + '</option>';
-                        $('#city').append(html);
-                        $('#loading').hide();
-                    });
+                    var cnt = Object.keys(response).length;
+                    if (cnt > 1) {
+                        $.each(response, function (key, value) {
+                            var html = '<option value="' + value + '">' + value + '</option>';
+                            $('#city').append(html);
+                            $('#loading').hide();
+                        });
+                    } else {
+                        $.ajax({
+                            beforeSend: function (xhr) {
+                                $('#loading').show();
+                                $('#mall-list').empty();
+                            },
+                            type: 'GET',
+                            url: '<?php echo url('getMallByCountry') ?>',
+                            dataType: 'json',
+                            data: {country: country},
+                            success: function (response)
+                            {
+                                $.each(response, function () {
+                                    var html = '<a href=""><li id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</li></a>';
+                                    $('#mall-list').append(html);
+                                });
+                                $('#loading').hide();
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -246,8 +268,6 @@ $(document).ready(function () {
                         return new MarkerClusterer(map, [], options);
 
                     },
-                  
-                    
                 });
 
                 var markers_data = [];
@@ -255,20 +275,20 @@ $(document).ready(function () {
                 if (response.length > 0) {
                     for (var i = 0; i < response.length; i++) {
                         if (response[i].latitude !== '' && response[i].longitude !== '') {
-                            
+
                             markers_data.push({
                                 lat: response[i].latitude,
                                 lng: response[i].longitude,
                                 infoWindow: {
                                     content: '<img src=' + response[i].url + ' height="150" width="150"/><br><a href=' + url + response[i].image_id + '>View detail</a>'
-                                   // content: "<div style='background-image: url("+response[i].url+"); height=100px; width=100px'></div><br><a href=' + url + response[i].image_id + '>View detail</a>',
+                                            // content: "<div style='background-image: url("+response[i].url+"); height=100px; width=100px'></div><br><a href=' + url + response[i].image_id + '>View detail</a>',
                                 },
                             });
                         }
                     }
                 }
                 map.addMarkers(markers_data);
-               
+
                 $('#loading').hide();
             }
         });
