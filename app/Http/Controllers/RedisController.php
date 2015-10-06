@@ -92,11 +92,19 @@ class RedisController extends Controller {
     public function getImagesByMall(Request $request) {
         $redis = $this->connectRedis();
         $mallId = $request->input('mall_id');
+        $number = $request->input('number');
         $total = $redis->get('totalDownload');
+        if ($number == 'All') {
+            $number = $total;
+        }
+        if(empty($number))
+        {
+            $number = 60000;
+        }
         // echo $total;
         $returnArr = array();
 
-        for ($i = 1; $i <= $total; $i++) {
+        for ($i = 1; $i <= $number; $i++) {
             $item = $redis->hget('image:' . $i, 'mall_id');
             if (!empty($item) && $item == $mallId) {
                 $items = $redis->hmget('image:' . $i, 'url', 'image_id', 'latitude', 'longitude');

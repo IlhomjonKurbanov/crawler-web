@@ -112,18 +112,35 @@
                     <option value="">Please select</option>
                 </select>
             </div>
+            <div class="selector">
+                <span>Number</span>
+                <select name="" id="number">
+                    <option value="">Please select</option>
+                    <option value="">20000</option>
+                    <option value="">40000</option>
+                    <option value="">60000</option>
+                    <option value="">80000</option>
+                    <option value="">100000</option>
+                    <option value="">All</option>
+                </select>
+            </div>
+            <div class="selector">
+                <span>Malls</span>
+                <select name="" id="mall">
+                    <option value="">Please select</option>
+                </select>
+            </div>
         </div>
         <div id="content">
 
-            <div id="mall">
+<!--            <div id="mall">
                 <div id="markerlist">
 
                 </div>
-                <h4>List malls</h4>
-                <ul id="mall-list">
-
-                </ul>
-            </div>
+                <select name="" id="mall">
+                    <option value="">Please select</option>
+                </select>
+            </div>-->
             <div id="map-container">
                 <div id="main_map"></div>
             </div>
@@ -229,7 +246,8 @@ $(document).ready(function () {
                 success: function (response)
                 {
                     $.each(response, function () {
-                        var html = '<a href=""><li id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</li></a>';
+                        var html = '<option id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</option>';
+                        // var html = '<a href=""><li id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</li></a>';
                         $('#mall-list').append(html);
                     });
                     $('#loading').hide();
@@ -238,9 +256,10 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('click', '#mall-list li', function (e) {
+    $(document).on('click', '#mall', function (e) {
         e.preventDefault();
         var mall_id = $(this).attr('id');
+        var number = $('#number').find(":selected").text();
         var map;
         var lat = $(this).attr('lat');
         var lng = $(this).attr('lng');
@@ -252,7 +271,64 @@ $(document).ready(function () {
             type: 'GET',
             url: '<?php echo url('getImagesByMall') ?>',
             dataType: 'json',
-            data: {mall_id: mall_id},
+            data: {mall_id: mall_id, number: number},
+            success: function (response)
+            {
+                map = new GMaps({
+                    div: '#main_map',
+                    lat: lat,
+                    lng: lng,
+                    markerClusterer: function (map) {
+                        options = {
+                            gridSize: 40,
+                            maxZoom: 14
+                        }
+
+                        return new MarkerClusterer(map, [], options);
+
+                    },
+                });
+
+                var markers_data = [];
+                var url = "http://128.199.215.18/public/index.php/image?image_id=";
+                if (response.length > 0) {
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].latitude !== '' && response[i].longitude !== '') {
+
+                            markers_data.push({
+                                lat: response[i].latitude,
+                                lng: response[i].longitude,
+                                infoWindow: {
+                                    content: '<img src=' + response[i].url + ' height="150" width="150"/><br><a href=' + url + response[i].image_id + '>View detail</a>'
+                                            // content: "<div style='background-image: url("+response[i].url+"); height=100px; width=100px'></div><br><a href=' + url + response[i].image_id + '>View detail</a>',
+                                },
+                            });
+                        }
+                    }
+                }
+                map.addMarkers(markers_data);
+
+                $('#loading').hide();
+            }
+        });
+    });
+
+    $(document).on('click', '#mall-list li', function (e) {
+        e.preventDefault();
+        var mall_id = $(this).attr('id');
+        var number = $('#number').find(":selected").text();
+        var map;
+        var lat = $(this).attr('lat');
+        var lng = $(this).attr('lng');
+
+        $.ajax({
+            beforeSend: function (xhr) {
+                $('#loading').show();
+            },
+            type: 'GET',
+            url: '<?php echo url('getImagesByMall') ?>',
+            dataType: 'json',
+            data: {mall_id: mall_id, number: number},
             success: function (response)
             {
                 map = new GMaps({
