@@ -36,7 +36,7 @@
             right: 0;
             bottom: 10px;
         }
-        
+
         .selector {
             float: left;
             margin-right: 20px;
@@ -95,6 +95,10 @@
             height: 220px;
             width: 200px;
         }
+
+        .country {
+            text-transform: uppercase;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="///maps.google.com/maps/api/js?sensor=true"></script>
@@ -131,11 +135,10 @@
             </div>
             <div class="selector">
                 <select name="" id="number">
-                    <option value="">Limit</option>
-                    <option value="">1000</option>
+                    <option value="">Limit(1000)</option>
                     <option value="">2000</option>
-                    <option value="">4000</option>
-                    <option value="">8000</option>
+                    <option value="">5000</option>
+                    <option value="">10000</option>
                     <option value="">All</option>
                 </select>
             </div>
@@ -165,7 +168,7 @@ $(document).ready(function () {
         div: '#main_map',
         lat: 40.088344977,
         lng: -75.393434309,
-        zoom: 15,
+        zoom: 10,
     });
 });
 window.onload = function () {
@@ -181,7 +184,7 @@ window.onload = function () {
         success: function (response)
         {
             $.each(response, function (key, value) {
-                var html = '<option value="' + value + '">' + value + '</option>';
+                var html = '<option class="country" value="' + value + '">' + value + '</option>';
                 $('#country').append(html);
             });
             $('#loading').hide();
@@ -292,10 +295,11 @@ $(document).ready(function () {
                     div: '#main_map',
                     lat: lat,
                     lng: lng,
+                    zoom: 10,
                     markerClusterer: function (map) {
                         options = {
                             gridSize: 40,
-                            maxZoom: 12
+                            maxZoom: 14
                         }
 
                         return new MarkerClusterer(map, [], options);
@@ -350,10 +354,11 @@ $(document).ready(function () {
                     div: '#main_map',
                     lat: lat,
                     lng: lng,
+                    zoom: 10,
                     markerClusterer: function (map) {
                         options = {
                             gridSize: 40,
-                            maxZoom: 12
+                            maxZoom: 14
                         }
 
                         return new MarkerClusterer(map, [], options);

@@ -31,7 +31,7 @@ class RedisController extends Controller {
             $item = $redis->hget('mall:' . $i, 'country');
             $returnArr[] = $item;
         }
-        return response()->json(array_unique($returnArr));
+        return response()->json(array_filter(array_unique($returnArr)));
     }
 
     public function getCityByCountry(Request $request) {
@@ -119,7 +119,7 @@ class RedisController extends Controller {
             $number = $total;
         }
         if (empty($number) || $number == 'Limit') {
-            $number = 2000;
+            $number = 1000;
         }
         $itemArr = array();
         $returnArr = array();
