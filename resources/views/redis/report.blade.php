@@ -7,23 +7,36 @@
         <title>Test crawler</title>
     </head>
     <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-size: 13px;
+            font-family: arial;
+        }
+
         #panel {
             width: 100%;
             float: left;
             clear: both;
-            padding: 10px;
+            padding: 5px;
             box-sizing: border-box;
         }
+
+        #panel > img {
+            width: 16px;
+            height: 16px;
+        }
+
         #content {
-            width: 100%;
-            float: left;
-            clear: both;
-            box-sizing: border-box;
+            position: absolute;
+            left: 0;
+            top: 40px;
+            right: 0;
+            bottom: 10px;
         }
-        #mall {
-            width: 300px;
-            float: left;
-        }
+        
         .selector {
             float: left;
             margin-right: 20px;
@@ -42,7 +55,7 @@
         }
         #main_map {
             width: 100%;
-            height: 600px;
+            height: 100%;
             box-sizing: border-box;
         }
         .title {
@@ -92,9 +105,8 @@
         <div id="panel">
             <img id="loading" src="{{asset('src/ajax-loader.gif')}}" />
             <div class="selector">
-                <span>Country</span>
                 <select name="" id="country">
-                    <option value="">Please select</option>
+                    <option value="">Country</option>
                 </select>
             </div>
             <!--            <div class="selector">
@@ -109,41 +121,37 @@
             <div class="selector">
                 <span>City</span>
                 <select name="" id="city">
-                    <option value="">Please select</option>
+                    <option value="">City</option>
                 </select>
             </div>
             <div class="selector">
-                <span>Number</span>
+                <select name="" id="mall">
+                    <option value="">Mall</option>
+                </select>
+            </div>
+            <div class="selector">
                 <select name="" id="number">
-                    <option value="">Please select</option>
-                    <option value="">20000</option>
-                    <option value="">40000</option>
-                    <option value="">60000</option>
-                    <option value="">80000</option>
-                    <option value="">100000</option>
+                    <option value="">Limit</option>
+                    <option value="">1000</option>
+                    <option value="">2000</option>
+                    <option value="">4000</option>
+                    <option value="">8000</option>
                     <option value="">All</option>
                 </select>
             </div>
-            <div class="selector">
-                <span>Malls</span>
-                <select name="" id="mall">
-                    <option value="">Please select</option>
-                </select>
-            </div>
+
         </div>
         <div id="content">
 
-<!--            <div id="mall">
-                <div id="markerlist">
-
-                </div>
-                <select name="" id="mall">
-                    <option value="">Please select</option>
-                </select>
-            </div>-->
-            <div id="map-container">
-                <div id="main_map"></div>
-            </div>
+            <!--            <div id="mall">
+                            <div id="markerlist">
+            
+                            </div>
+                            <select name="" id="mall">
+                                <option value="">Please select</option>
+                            </select>
+                        </div>-->
+            <div id="main_map"></div>
         </div>
 
     </body>
@@ -157,6 +165,7 @@ $(document).ready(function () {
         div: '#main_map',
         lat: 40.088344977,
         lng: -75.393434309,
+        zoom: 15,
     });
 });
 window.onload = function () {
@@ -188,9 +197,10 @@ $(document).ready(function () {
             $.ajax({
                 beforeSend: function (xhr) {
                     $('#loading').show();
-                    $('#mall-list').empty();
+                    $('#mall').empty();
                     $('#city').empty();
-                    $('#city').append('<option value="">Please select</option>');
+                    $('#city').append('<option value="">City</option>');
+                    $('#mall').append('<option value="">Mall</option>');
                 },
                 type: 'GET',
                 url: '<?php echo url('getCityByCountry') ?>',
@@ -209,7 +219,8 @@ $(document).ready(function () {
                         $.ajax({
                             beforeSend: function (xhr) {
                                 $('#loading').show();
-                                $('#mall-list').empty();
+                                $('#mall').empty();
+                                $('#mall').append('<option value="">Mall</option>');
                             },
                             type: 'GET',
                             url: '<?php echo url('getMallByCountry') ?>',
@@ -218,8 +229,9 @@ $(document).ready(function () {
                             success: function (response)
                             {
                                 $.each(response, function () {
-                                    var html = '<a href=""><li id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</li></a>';
-                                    $('#mall-list').append(html);
+                                    var html = '<option mall_id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + ' (' + this.totalImage + ')</option>';
+                                    // var html = '<a href=""><li id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</li></a>';
+                                    $('#mall').append(html);
                                 });
                                 $('#loading').hide();
                             }
@@ -237,7 +249,8 @@ $(document).ready(function () {
             $.ajax({
                 beforeSend: function (xhr) {
                     $('#loading').show();
-                    $('#mall-list').empty();
+                    $('#mall').empty();
+                    $('#mall').append('<option value="">Mall</option>');
                 },
                 type: 'GET',
                 url: '<?php echo url('getMallByCity') ?>',
@@ -246,9 +259,9 @@ $(document).ready(function () {
                 success: function (response)
                 {
                     $.each(response, function () {
-                        var html = '<option id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</option>';
+                        var html = '<option mall_id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + ' (' + this.totalImage + ')</option>';
                         // var html = '<a href=""><li id="' + this.mall_id + '" lat="' + this.lat + '" lng="' + this.lng + '">' + this.name + '</li></a>';
-                        $('#mall-list').append(html);
+                        $('#mall').append(html);
                     });
                     $('#loading').hide();
                 }
@@ -256,20 +269,21 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('click', '#mall', function (e) {
+    $(document).on('change', '#mall', function (e) {
         e.preventDefault();
-        var mall_id = $(this).attr('id');
+        // var mall_id = $(this).attr('mall_id');
         var number = $('#number').find(":selected").text();
+        var mall_id = $('#mall').find(":selected").attr('mall_id');
         var map;
-        var lat = $(this).attr('lat');
-        var lng = $(this).attr('lng');
+        var lat = $('#mall').find(":selected").attr('lat');
+        var lng = $('#mall').find(":selected").attr('lng');
 
         $.ajax({
             beforeSend: function (xhr) {
                 $('#loading').show();
             },
             type: 'GET',
-            url: '<?php echo url('getImagesByMall') ?>',
+            url: '<?php echo url('getImagesByMall2') ?>',
             dataType: 'json',
             data: {mall_id: mall_id, number: number},
             success: function (response)
@@ -281,7 +295,7 @@ $(document).ready(function () {
                     markerClusterer: function (map) {
                         options = {
                             gridSize: 40,
-                            maxZoom: 14
+                            maxZoom: 12
                         }
 
                         return new MarkerClusterer(map, [], options);
@@ -290,7 +304,7 @@ $(document).ready(function () {
                 });
 
                 var markers_data = [];
-                var url = "http://128.199.215.18/public/index.php/image?image_id=";
+                var url = "http://52.74.188.116//public/index.php/image?image_id=";
                 if (response.length > 0) {
                     for (var i = 0; i < response.length; i++) {
                         if (response[i].latitude !== '' && response[i].longitude !== '') {
@@ -299,7 +313,65 @@ $(document).ready(function () {
                                 lat: response[i].latitude,
                                 lng: response[i].longitude,
                                 infoWindow: {
-                                    content: '<img src=' + response[i].url + ' height="150" width="150"/><br><a href=' + url + response[i].image_id + '>View detail</a>'
+                                    content: '<img src=' + response[i].url + ' height="150" width="150"/><br><a target="_blank" href=' + url + response[i].image_id + '>View detail</a>'
+                                            // content: "<div style='background-image: url("+response[i].url+"); height=100px; width=100px'></div><br><a href=' + url + response[i].image_id + '>View detail</a>',
+                                },
+                            });
+                        }
+                    }
+                }
+                map.addMarkers(markers_data);
+
+                $('#loading').hide();
+            }
+        });
+    });
+
+    $(document).on('change', '#number', function (e) {
+        e.preventDefault();
+        // var mall_id = $(this).attr('mall_id');
+        var number = $('#number').find(":selected").text();
+        var mall_id = $('#mall').find(":selected").attr('mall_id');
+        var map;
+        var lat = $('#mall').find(":selected").attr('lat');
+        var lng = $('#mall').find(":selected").attr('lng');
+
+        $.ajax({
+            beforeSend: function (xhr) {
+                $('#loading').show();
+            },
+            type: 'GET',
+            url: '<?php echo url('getImagesByMall2') ?>',
+            dataType: 'json',
+            data: {mall_id: mall_id, number: number},
+            success: function (response)
+            {
+                map = new GMaps({
+                    div: '#main_map',
+                    lat: lat,
+                    lng: lng,
+                    markerClusterer: function (map) {
+                        options = {
+                            gridSize: 40,
+                            maxZoom: 12
+                        }
+
+                        return new MarkerClusterer(map, [], options);
+
+                    },
+                });
+
+                var markers_data = [];
+                var url = "http://52.74.188.116//public/index.php/image?image_id=";
+                if (response.length > 0) {
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].latitude !== '' && response[i].longitude !== '') {
+
+                            markers_data.push({
+                                lat: response[i].latitude,
+                                lng: response[i].longitude,
+                                infoWindow: {
+                                    content: '<img src=' + response[i].url + ' height="150" width="150"/><br><a target="_blank" href=' + url + response[i].image_id + '>View detail</a>'
                                             // content: "<div style='background-image: url("+response[i].url+"); height=100px; width=100px'></div><br><a href=' + url + response[i].image_id + '>View detail</a>',
                                 },
                             });

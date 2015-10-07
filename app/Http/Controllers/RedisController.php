@@ -57,12 +57,7 @@ class RedisController extends Controller {
         for ($i = 1; $i <= $total; $i++) {
             $item = $redis->hget('mall:' . $i, 'city');
             if (!empty($item) && $item == $city) {
-                $items = $redis->hmget('mall:' . $i, 'mall_id', 'name', 'lat', 'lng');
-                $itemArr = array();
-                $itemArr['mall_id'] = $items[0];
-                $itemArr['name'] = $items[1];
-                $itemArr['lat'] = $items[2];
-                $itemArr['lng'] = $items[3];
+                $itemArr = $redis->hgetAll('mall:' . $i);
                 $returnArr[] = $itemArr;
             }
         }
@@ -77,12 +72,7 @@ class RedisController extends Controller {
         for ($i = 1; $i <= $total; $i++) {
             $item = $redis->hget('mall:' . $i, 'country');
             if (!empty($item) && $item == $country) {
-                $items = $redis->hmget('mall:' . $i, 'mall_id', 'name', 'lat', 'lng');
-                $itemArr = array();
-                $itemArr['mall_id'] = $items[0];
-                $itemArr['name'] = $items[1];
-                $itemArr['lat'] = $items[2];
-                $itemArr['lng'] = $items[3];
+                $itemArr = $redis->hgetAll('mall:' . $i);
                 $returnArr[] = $itemArr;
             }
         }
@@ -97,8 +87,7 @@ class RedisController extends Controller {
         if ($number == 'All') {
             $number = $total;
         }
-        if(empty($number))
-        {
+        if (empty($number)) {
             $number = 60000;
         }
         // echo $total;
@@ -114,6 +103,42 @@ class RedisController extends Controller {
                 $itemArr['latitude'] = $items[2];
                 $itemArr['longitude'] = $items[3];
                 $returnArr[] = $itemArr;
+            }
+        }
+        return response()->json($returnArr);
+    }
+
+    public function getImagesByMall2(Request $request) {
+        $redis = $this->connectRedis();
+        $mallId = $request->input('mall_id');
+        $list = 'mallimage:' . $mallId;
+        $arrList = $redis->lrange($list, 0, -1);
+        $total = count($arrList);
+        $number = $request->input('number');
+        if ($number == 'All') {
+            $number = $total;
+        }
+        if (empty($number) || $number == 'Limit') {
+            $number = 2000;
+        }
+        $itemArr = array();
+        $returnArr = array();
+        $cnt = 0;
+        foreach ($arrList as $item) {
+            $cnt++;
+            $items = $redis->hmget('image:' . $item, 'url', 'image_id', 'latitude', 'longitude');
+//            var_dump($items);
+//            die()
+            $itemArr = array();
+            if (!empty($items[2]) || !empty($items[3])) {
+                $itemArr['url'] = $items[0];
+                $itemArr['image_id'] = $item;
+                $itemArr['latitude'] = $items[2];
+                $itemArr['longitude'] = $items[3];
+                $returnArr[] = $itemArr;
+            }
+            if ($cnt === (int) $number) {
+                break;
             }
         }
         return response()->json($returnArr);
