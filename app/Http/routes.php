@@ -33,6 +33,8 @@ Route::get('report', 'RedisController@index');
 
 Route::get('image', 'RedisController@getImagesById');
 
+Route::get('updateImageList', 'RedisController@updateImageList');
+
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',

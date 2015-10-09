@@ -151,4 +151,80 @@ class RedisController extends Controller {
         return view('redis/view', array('data' => $item));
     }
 
+    public function updateImageList() {
+        set_time_limit(0);
+        
+        $timeStart = time();
+        $redis = $this->connectRedis();
+
+        // get total image
+        $totalImage = $redis->get('totalDownload');
+        $totalMall = $redis->get('totalMall');
+
+        $mallList = array();
+        $limit = 10000;
+        $pages = 0;
+        
+        $totalUpdatedImage = 0;
+
+        echo 'Total images: ' . $totalImage . '<br/>';
+        echo 'Total malls: ' . $totalMall . '<br/>';
+
+        if ($totalImage > 0) {
+            // get mall list and bind to array
+            for ($i = 1; $i <= $totalMall; $i++) {
+                $mall = $redis->hGetAll('mall:' . $i); // get a mall
+
+                if ($mall) {
+                    // reset image list
+                    $redis->del('mallimage:' . $i);
+                    $mallList[$mall['mall_id']] = array(
+                        'total' => 0,
+                        'imageList' => array()
+                    );
+                }
+            }
+
+
+            $pages = ceil($totalImage / $limit);
+            for ($page = 0; $page < $pages; $page++) {
+                // get images from Redis and update to mall list
+                for ($i = $limit * $page; $i < min($limit * ($page + 1), $totalImage); $i++) {
+                    $image = $redis->hGetAll('image:' . $i); // get mall ID from image
+                    if ($image) {
+                        $mallId = intval($image['mall_id']);
+                        if (isset($mallList[$mallId])) {
+                            $mallList[$mallId]['total'] ++;
+                            $mallList[$mallId]['imageList'][] = $i;
+                            
+                            $totalUpdatedImage++;
+                        }
+                    }
+                }
+
+                // update mall DB
+                foreach ($mallList as $key => $value) {
+                    // update image list 
+                    if ($mallList[$key]['imageList']) {
+                        $redis->rpush('mallimage:' . $key, $mallList[$key]['imageList']);
+                    }
+                    
+                    // reset image list
+                    $mallList[$key]['imageList'] = array();
+                }
+            }
+            
+            echo 'Total image updated: ' . $totalUpdatedImage . '<br>';
+            echo 'Last count images: <br>';
+            var_dump($mallList);
+
+            // update mall DB
+            foreach ($mallList as $key => $value) {
+                $redis->hset('mall:' . $key, 'totalImage', $value['total']);
+            }
+            
+            echo 'Total execution time: ' . ((time() - $timeStart) / 3600);
+        }
+    }
+
 }
