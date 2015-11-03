@@ -16,7 +16,7 @@ class Point_of_interest extends Model {
      *
      * @var array
      */
-    protected $fillable = ['name', 'poi_type_id', 'poi_category_id', 'cover_photo', 'node_id', 'venue_id'];
+    protected $fillable = ['name', 'poi_type_id', 'poi_category_id', 'cover_photo', 'node_id', 'venue_id', 'latitude', 'longitude', 'radius', 'circle_id'];
 
     /**
      * The attributes excluded from the model's JSON form.

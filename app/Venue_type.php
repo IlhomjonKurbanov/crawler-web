@@ -9,7 +9,7 @@ class Venue_type extends Model {
      *
      * @var string
      */
-    protected $table = 'Venue_types';
+    protected $table = 'venue_types';
 
     /**
      * The attributes that are mass assignable.
