@@ -308,7 +308,7 @@ $(document).ready(function () {
                 });
 
                 var markers_data = [];
-                var url = "http://52.74.188.116//public/index.php/image?image_id=";
+                var url = "http://52.74.188.116/image?image_id=";
                 if (response.length > 0) {
                     for (var i = 0; i < response.length; i++) {
                         if (response[i].latitude !== '' && response[i].longitude !== '') {
@@ -367,7 +367,7 @@ $(document).ready(function () {
                 });
 
                 var markers_data = [];
-                var url = "http://52.74.188.116//public/index.php/image?image_id=";
+                var url = "http://52.74.188.116/image?image_id=";
                 if (response.length > 0) {
                     for (var i = 0; i < response.length; i++) {
                         if (response[i].latitude !== '' && response[i].longitude !== '') {
@@ -424,7 +424,7 @@ $(document).ready(function () {
                 });
 
                 var markers_data = [];
-                var url = "http://128.199.215.18/public/index.php/image?image_id=";
+                var url = "http://128.199.215.18/image?image_id=";
                 if (response.length > 0) {
                     for (var i = 0; i < response.length; i++) {
                         if (response[i].latitude !== '' && response[i].longitude !== '') {
