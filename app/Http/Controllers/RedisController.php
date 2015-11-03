@@ -153,7 +153,7 @@ class RedisController extends Controller {
 
     public function updateImageList() {
         set_time_limit(0);
-        
+
         $timeStart = time();
         $redis = $this->connectRedis();
 
@@ -164,7 +164,7 @@ class RedisController extends Controller {
         $mallList = array();
         $limit = 10000;
         $pages = 0;
-        
+
         $totalUpdatedImage = 0;
 
         echo 'Total images: ' . $totalImage . '<br/>';
@@ -196,7 +196,7 @@ class RedisController extends Controller {
                         if (isset($mallList[$mallId])) {
                             $mallList[$mallId]['total'] ++;
                             $mallList[$mallId]['imageList'][] = $i;
-                            
+
                             $totalUpdatedImage++;
                         }
                     }
@@ -208,12 +208,12 @@ class RedisController extends Controller {
                     if ($mallList[$key]['imageList']) {
                         $redis->rpush('mallimage:' . $key, $mallList[$key]['imageList']);
                     }
-                    
+
                     // reset image list
                     $mallList[$key]['imageList'] = array();
                 }
             }
-            
+
             echo 'Total image updated: ' . $totalUpdatedImage . '<br>';
             echo 'Last count images: <br>';
             var_dump($mallList);
@@ -222,7 +222,7 @@ class RedisController extends Controller {
             foreach ($mallList as $key => $value) {
                 $redis->hset('mall:' . $key, 'totalImage', $value['total']);
             }
-            
+
             echo 'Total execution time: ' . ((time() - $timeStart) / 3600);
         }
     }
