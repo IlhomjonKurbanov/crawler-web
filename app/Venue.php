@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Venues extends Model {
+class Venue extends Model {
 
     /**
      * The database table used by the model.
