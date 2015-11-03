@@ -36,8 +36,8 @@ class Point_of_interest extends Model {
         $model->poi_type_id = 1;
         $model->poi_category_id = 1;
         $model->cover_photo = 'test';
-        $model->node_id = 5;
-        $model->venue_id = 3;
+        $model->node_id = 1;
+        $model->venue_id = 1;
         $model->latitude = $lat;
         $model->longitude = $lng;
         $model->radius = $radius;
