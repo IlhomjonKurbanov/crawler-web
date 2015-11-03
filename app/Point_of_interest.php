@@ -24,5 +24,11 @@ class Point_of_interest extends Model {
      * @var array
      */
     protected $hidden = [''];
+    
+    public static function add($lat, $lng, $radius, $id, $type)
+    {
+        $model = new Point_of_interest;
+        
+    }
 
 }

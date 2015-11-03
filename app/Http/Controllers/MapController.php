@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Point_of_interest;
 
 class MapController extends Controller {
 
@@ -24,7 +25,7 @@ class MapController extends Controller {
         $id = $request->input('id');
         $type = $request->input('type');
         
-        
+        Point_of_interest::add($lat, $lng, $radius, $id, $type);
         
     }
 
