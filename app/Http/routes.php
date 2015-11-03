@@ -35,6 +35,8 @@ Route::get('image', 'RedisController@getImagesById');
 
 Route::get('updateImageList', 'RedisController@updateImageList');
 
+Route::post('saveCircle', 'MapController@saveCircleToDatabase');
+
 Route::get('map', 'MapController@index');
 
 Route::controllers([

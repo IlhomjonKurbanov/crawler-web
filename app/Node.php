@@ -24,5 +24,10 @@ class Node extends Model {
      * @var array
      */
     protected $hidden = [''];
+    
+    public function saveNode()
+    {
+        
+    }
 
 }
