@@ -6,6 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Point_of_interest;
+use App\Node;
 
 class MapController extends Controller {
 
@@ -24,9 +25,16 @@ class MapController extends Controller {
         $radius = $request->input('radius');
         $id = $request->input('id');
         $type = $request->input('type');
-        
-        Point_of_interest::add($lat, $lng, $radius, $id, $type);
-        
+
+        if ($type === 'node') {
+            $result = Node::add($lat, $lng, $radius, $id);
+        } else if ($type == 'poi') {
+            $result = Point_of_interest::add($lat, $lng, $radius, $id);
+        }
+        if ($result) {
+            return response()->json(array('status' => 1, 'message' => 'Success'));
+        }
+        return response()->json(array('status' => 0, 'message' => 'Error !!'));
     }
 
     /**

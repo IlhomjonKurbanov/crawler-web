@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,11 +26,26 @@ class Point_of_interest extends Model {
      * @var array
      */
     protected $hidden = [''];
-    
-    public static function add($lat, $lng, $radius, $id, $type)
-    {
-        $model = new Point_of_interest;
-        
+
+    public static function add($lat, $lng, $radius, $id) {
+        $model = Point_of_interest::firstByAttributes(array('circle_id' => $id));
+        if (!$model) {
+            $model = new Point_of_interest();
+        }
+        $model->name = '';
+        $model->poi_type_id = 1;
+        $model->poi_category_id = 1;
+        $model->cover_photo = 'test';
+        $model->node_id = 5;
+        $model->venue_id = 3;
+        $model->latitude = $lat;
+        $model->longitude = $lng;
+        $model->radius = $radius;
+        $model->circle_id = $id;
+        if ($model->save()) {
+            return TRUE;
+        }
+        return FALSE;
     }
 
 }
