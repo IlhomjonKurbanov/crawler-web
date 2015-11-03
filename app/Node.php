@@ -16,7 +16,7 @@ class Node extends Model {
      *
      * @var array
      */
-    protected $fillable = ['path_id'];
+    protected $fillable = ['path_id', 'latitude', 'longitude', 'radius', 'circle_id', 'weight'];
 
     /**
      * The attributes excluded from the model's JSON form.
