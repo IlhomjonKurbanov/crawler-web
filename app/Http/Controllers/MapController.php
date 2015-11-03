@@ -25,6 +25,7 @@ class MapController extends Controller {
         $type = $request->input('type');
         
         
+        
     }
 
     /**
