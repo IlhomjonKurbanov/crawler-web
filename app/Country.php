@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Countrie extends Model {
+class Country extends Model {
 
     /**
      * The database table used by the model.
