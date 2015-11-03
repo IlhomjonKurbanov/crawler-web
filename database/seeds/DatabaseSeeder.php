@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder {
 		$this->call('VenueTypesTableSeeder');
 		$this->call('PoiCategoriesTableSeeder');
 		$this->call('PoiTypesTableSeeder');
+		$this->call('PathsTableSeeder');
+		$this->call('VenuesTableSeeder');
 	}
 
 }
