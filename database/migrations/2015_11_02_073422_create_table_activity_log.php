@@ -15,10 +15,10 @@ class CreateTableActivityLog extends Migration {
 		Schema::create('activity_log', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name');
+			$table->string('name')->nullable();
 			$table->integer('user_id')->unsigned();
 			$table->foreign('user_id')->references('id')->on('users');
-			$table->text('activity');
+			$table->text('activity')->nullable();
 			$table->timestamps();
 		});
 	}

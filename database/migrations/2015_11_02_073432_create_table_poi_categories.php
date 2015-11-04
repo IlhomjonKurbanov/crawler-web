@@ -15,7 +15,7 @@ class CreateTablePoiCategories extends Migration {
 		Schema::create('poi_categories', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name'); // fashion, food, electronic, shoes, clothing, jewelry, beauty, home, description
+			$table->string('name')->nullable(); // fashion, food, electronic, shoes, clothing, jewelry, beauty, home, description
 			$table->timestamps();
 		});
 	}

@@ -15,12 +15,12 @@ class CreateTablePointsOfInterest extends Migration {
 		Schema::create('points_of_interest', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name');
+			$table->string('name')->nullable();
 			$table->integer('poi_type_id')->unsigned();
 			$table->foreign('poi_type_id')->references('id')->on('poi_types');
 			$table->integer('poi_category_id')->unsigned();
 			$table->foreign('poi_category_id')->references('id')->on('poi_categories');
-			$table->string('cover_photo');
+			$table->string('cover_photo')->nullable();
 			$table->integer('node_id')->unsigned();
 			$table->foreign('node_id')->references('id')->on('nodes');
 			$table->integer('venue_id')->unsigned();

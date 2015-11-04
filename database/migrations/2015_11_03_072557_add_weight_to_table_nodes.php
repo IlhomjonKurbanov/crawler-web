@@ -13,7 +13,7 @@ class AddWeightToTableNodes extends Migration {
 	public function up()
 	{
 		Schema::table('nodes', function ($table) {
-		    $table->integer('weight');
+		    $table->integer('weight')->nullable();
 		});
 	}
 

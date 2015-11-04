@@ -15,8 +15,8 @@ class CreateTablePoiTypes extends Migration {
 		Schema::create('poi_types', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name'); // store, escalator, elevator, restroom, atm, exit, stairs, information, food, lounges
-			$table->text('description');
+			$table->string('name')->nullable(); // store, escalator, elevator, restroom, atm, exit, stairs, information, food, lounges
+			$table->text('description')->nullable();
 			$table->timestamps();
 		});
 	}
