@@ -15,13 +15,13 @@ class CreateTableVenues extends Migration {
 		Schema::create('venues', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name');
-			$table->text('description');
+			$table->string('name')->nullable();
+			$table->text('description')->nullable();
 			$table->integer('venue_type_id')->unsigned();
 			$table->foreign('venue_type_id')->references('id')->on('venue_types');
-			$table->string('gps_latitude');
-			$table->string('gps_longitude');
-			$table->string('zip_postal_code');
+			$table->string('gps_latitude')->nullable();
+			$table->string('gps_longitude')->nullable();
+			$table->string('zip_postal_code')->nullable();
 			$table->timestamps();
 		});
 	}

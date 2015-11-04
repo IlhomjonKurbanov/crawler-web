@@ -15,8 +15,8 @@ class CreateTablePaths extends Migration {
 		Schema::create('paths', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('floor_level')->unsigned();
-			$table->text('svg_json');
+			$table->integer('floor_level')->unsigned()->nullable();
+			$table->text('svg_json')->nullable();
 			$table->timestamps();
 		});
 	}

@@ -15,7 +15,7 @@ class CreateTablePhotos extends Migration {
 		Schema::create('photos', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->text('s3_url');
+			$table->text('s3_url')->nullable();
 			$table->integer('poi_id')->unsigned();
 			$table->foreign('poi_id')->references('id')->on('points_of_interest');
 			$table->integer('venue_id')->unsigned();
@@ -28,8 +28,8 @@ class CreateTablePhotos extends Migration {
 			$table->foreign('user_id')->references('id')->on('users');
 			$table->integer('post_id')->unsigned();
 			$table->foreign('post_id')->references('id')->on('posts');
-			$table->string('photo_source'); // mapper, crawler, user, vendor
-			$table->string('igestion_state'); // use, do-not-use, unprocessed, separate-out
+			$table->string('photo_source')->nullable(); // mapper, crawler, user, vendor
+			$table->string('igestion_state')->nullable(); // use, do-not-use, unprocessed, separate-out
 			$table->timestamps();
 		});
 	}
