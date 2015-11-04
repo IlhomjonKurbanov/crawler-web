@@ -142,7 +142,7 @@ function placeRectangle(north, south, east, west, type)
     saveRectangle(cityRectangle);
     google.maps.event.addListener(cityRectangle, 'bounds_changed', function ()
     {
-        saveRectangle(cityRectangle);
+        //saveRectangle(cityRectangle);
     });
 
     google.maps.event.addListener(cityRectangle, 'dragend', function ()

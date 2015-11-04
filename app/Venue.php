@@ -32,6 +32,7 @@ class Venue extends Model {
         if (!$model) {
             $model = new Venue();
         }
+        $model->venue_type_id = 1;
         $model->lat_top_right = $NElat;
         $model->lng_top_right = $NElng;
         $model->lat_bottom_left = $SWlat;
