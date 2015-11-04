@@ -31,7 +31,7 @@ $(document).ready(function () {
             //console.log(NorthEast.lng());
             //console.log(latlngBounds.getNorthEast().lat());
             //var ll = overlay.getProjection().get(latlngBounds);
-            placeRectangle(NEBounds.lat(), SEBounds.lat(), SEBounds.lng(), SWBounds.lng(), 'rec');
+            placeRectangle(NEBounds.lat(), SEBounds.lat(), SEBounds.lng(), NWBounds.lng(), 'rec');
         }
     });
 });
