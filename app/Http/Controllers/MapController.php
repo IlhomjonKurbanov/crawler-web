@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Point_of_interest;
 use App\Node;
+use App\Venue;
 
 class MapController extends Controller {
 
@@ -15,11 +16,10 @@ class MapController extends Controller {
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -40,6 +40,22 @@ class MapController extends Controller {
             $result = Node::add($lat, $lng, $radius, $id);
         } else if ($type == 'poi') {
             $result = Point_of_interest::add($lat, $lng, $radius, $id);
+        }
+        if ($result) {
+            return response()->json(array('status' => 1, 'message' => 'Success'));
+        }
+        return response()->json(array('status' => 0, 'message' => 'Error !!'));
+    }
+
+    public function saveRectangleToDatabase(Request $request) {
+        $id = $request->input('id');
+        $NElng = $request->input('NElng');
+        $type = $request->input('type');
+        $SWlat = $request->input('SWlat');
+        $NElat = $request->input('NELat');
+        $SWlng = $request->input('SWlng');
+        if ($type === 'rec') {
+            $result = Venue::addRectangle($NElat, $NElng, $SWlat, $SWlng, $type, $id);
         }
         if ($result) {
             return response()->json(array('status' => 1, 'message' => 'Success'));

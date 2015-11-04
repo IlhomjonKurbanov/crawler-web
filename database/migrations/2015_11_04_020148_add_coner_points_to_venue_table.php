@@ -15,7 +15,7 @@ class AddConerPointsToVenueTable extends Migration {
 	{
 		Schema::table('venues', function($table)
 		{
-			$table->string('lat_top_left');
+			$table->string('lat_top_left')->nullable();
 			$table->string('lng_top_left');
 
 			$table->string('lat_top_right');

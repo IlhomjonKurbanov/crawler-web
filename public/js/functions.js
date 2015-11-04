@@ -3,7 +3,7 @@ $(document).ready(function () {
         stop: function (e) {
             var point = new google.maps.Point(e.pageX, e.pageY);
             var ll = overlay.getProjection().fromContainerPixelToLatLng(point);
-            placeMarker(ll, 'node');
+            placeCircle(ll, 'node');
         }
     });
 
@@ -11,7 +11,7 @@ $(document).ready(function () {
         stop: function (e) {
             var point = new google.maps.Point(e.pageX, e.pageY);
             var ll = overlay.getProjection().fromContainerPixelToLatLng(point);
-            placeMarker(ll, 'poi');
+            placeCircle(ll, 'poi');
         }
     });
 
@@ -26,11 +26,7 @@ $(document).ready(function () {
             var NWBounds = overlay.getProjection().fromContainerPixelToLatLng(NorthWest);
             var SWBounds = overlay.getProjection().fromContainerPixelToLatLng(SouthWest);
             var SEBounds = overlay.getProjection().fromContainerPixelToLatLng(SouthEast);
-            //var latlngBounds = new google.maps.LatLngBounds(NorthEast, SouthWest);
-            //console.log(NEBounds.lat());
-            //console.log(NorthEast.lng());
-            //console.log(latlngBounds.getNorthEast().lat());
-            //var ll = overlay.getProjection().get(latlngBounds);
+
             placeRectangle(NEBounds.lat(), SEBounds.lat(), SEBounds.lng(), NWBounds.lng(), 'rec');
         }
     });
@@ -40,6 +36,7 @@ var $map;
 var $latlng;
 var overlay;
 var c = 1;
+var baseUrl = 'http://localhost/crawler/public/';
 function cuniq() {
     var d = new Date(),
             m = d.getMilliseconds() + "",
@@ -77,7 +74,7 @@ function initialize() {
     overlay.setMap($map);
 }
 
-function placeMarker(location, type) {
+function placeCircle(location, type) {
     var color = null;
     if (type === 'node') {
         color = '#FF0000';
@@ -142,21 +139,47 @@ function placeRectangle(north, south, east, west, type)
     });
     cityRectangle.set('id', cuniq());
     cityRectangle.set('type', type);
-    // saveCirle(cityCircle);
+    saveRectangle(cityRectangle);
     google.maps.event.addListener(cityRectangle, 'bounds_changed', function ()
     {
-        //console.log(cityCircle.getCenter());
+        saveRectangle(cityRectangle);
     });
 
     google.maps.event.addListener(cityRectangle, 'dragend', function ()
     {
 
-        //saveCirle(cityCircle);
-        console.log(cityRectangle.getBounds());
+        saveRectangle(cityRectangle);
+        //console.log(cityRectangle.getBounds().getNorthEast().lat());
     });
 
 }
 
+function saveRectangle(cityRectangle)
+{
+    var NElat = cityRectangle.getBounds().getNorthEast().lat();
+    var NElng = cityRectangle.getBounds().getNorthEast().lng();
+    var SWlat = cityRectangle.getBounds().getSouthWest().lat();
+    var SWlng = cityRectangle.getBounds().getSouthWest().lng();
+
+    var id = cityRectangle.get('id');
+    var type = cityRectangle.get('type');
+
+    $.ajax({
+        type: 'POST',
+        url: baseUrl + 'saveRectangle',
+        data: {
+            NElat: NElat, NElng: NElng, SWlat: SWlat, SWlng: SWlng, id: id, type: type
+        },
+        success: function (response)
+        {
+            console.log(response);
+        },
+        error: function ()
+        {
+
+        }
+    });
+}
 function saveCirle(cityCircle)
 {
     var lat = cityCircle.getCenter().lat();
@@ -171,13 +194,13 @@ function saveCirle(cityCircle)
     console.log(type);
     $.ajax({
         type: 'POST',
-        url: 'http://localhost/crawler/public/saveCircle',
+        url: baseUrl + 'saveCircle',
         data: {
             lat: lat, lng: lng, radius: radius, id: id, type: type
         },
         success: function (response)
         {
-
+            console.log(response);
         },
         error: function ()
         {

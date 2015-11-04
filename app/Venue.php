@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,5 +26,21 @@ class Venue extends Model {
      * @var array
      */
     protected $hidden = [''];
+
+    public static function addRectangle($NElat, $NElng, $SWlat, $SWlng, $type, $id) {
+        $model = Venue::firstByAttributes(array('rec_id' => $id));
+        if (!$model) {
+            $model = new Venue();
+        }
+        $model->lat_top_right = $NElat;
+        $model->lng_top_right = $NElng;
+        $model->lat_bottom_left = $SWlat;
+        $model->lng_bottom_left = $SWlng;
+        $model->rec_id = $id;
+        if ($model->save()) {
+            return TRUE;
+        }
+        return FALSE;
+    }
 
 }
