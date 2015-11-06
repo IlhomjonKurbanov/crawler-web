@@ -36,7 +36,12 @@ var $map;
 var $latlng;
 var overlay;
 var c = 1;
-var baseUrl = 'http://localhost/crawler/public/';
+var circleZIndex = 1;
+var rectangleArr = [];
+var circleArr = [];
+
+
+var baseUrl = 'http://52.74.188.116/';
 function cuniq() {
     var d = new Date(),
             m = d.getMilliseconds() + "",
@@ -74,6 +79,30 @@ function initialize() {
     overlay.setMap($map);
 }
 
+function disableAllRectangle()
+{
+    rectangleArr.forEach(function (rectangle) {
+        rectangle.editable = false;
+        rectangle.draggable = false;
+    });
+}
+
+function enableAllRectangle()
+{
+    rectangleArr.forEach(function (rectangle) {
+        rectangle.editable = true;
+        rectangle.draggable = true;
+    });
+}
+
+function disableAllCircle()
+{
+    circleArr.forEach(function (circle) {
+        circle.editable = false;
+        circle.draggable = false;
+    });
+}
+
 function placeCircle(location, type) {
     var color = null;
     if (type === 'node') {
@@ -96,9 +125,11 @@ function placeCircle(location, type) {
             radius: 60,
             editable: true,
             draggable: true,
+            zIndex: circleZIndex++,
         });
         cityCircle.set('id', cuniq());
         cityCircle.set('type', type);
+        circleArr.push(cityCircle);
         saveCirle(cityCircle);
         google.maps.event.addListener(cityCircle, 'center_changed', function ()
         {
@@ -136,7 +167,11 @@ function placeRectangle(north, south, east, west, type)
         //radius: 60,
         editable: true,
         draggable: true,
+        zIndex: -1000
     });
+    rectangleArr.push(cityRectangle);
+    //console.log(rectangleArr);
+    //disableAllRectangle();
     cityRectangle.set('id', cuniq());
     cityRectangle.set('type', type);
     saveRectangle(cityRectangle);
@@ -144,11 +179,19 @@ function placeRectangle(north, south, east, west, type)
     {
         //saveRectangle(cityRectangle);
     });
-
+    
+    google.maps.event.addListener(cityRectangle, 'dragstart', function ()
+    {
+        //disableAllRectangle();
+        //saveRectangle(cityRectangle);
+        //console.log(cityRectangle.getBounds().getNorthEast().lat());
+    });
+    
     google.maps.event.addListener(cityRectangle, 'dragend', function ()
     {
 
         saveRectangle(cityRectangle);
+        //enableAllRectangle();
         //console.log(cityRectangle.getBounds().getNorthEast().lat());
     });
 
