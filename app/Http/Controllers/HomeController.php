@@ -1,5 +1,5 @@
 <?php namespace App\Http\Controllers;
-
+use App\Venue;
 class HomeController extends Controller {
 
 	/*
@@ -31,6 +31,12 @@ class HomeController extends Controller {
 	public function index()
 	{
 		return view('home');
+	}
+
+	public function selectMall()
+	{
+		$venues = Venue::all();
+		return view('select_mall')->with('venues', $venues);
 	}
 
 }

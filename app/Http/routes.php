@@ -15,6 +15,8 @@
 
 Route::get('/', 'HomeController@index');
 
+Route::get('/home', 'HomeController@selectMall');
+
 Route::get('getImagesByMall', 'RedisController@getImagesByMall');
 
 Route::get('getImagesByMall2', 'RedisController@getImagesByMall2');
