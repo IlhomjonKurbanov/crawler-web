@@ -51,7 +51,7 @@ function cuniq() {
 function initialize() {
     var $latlng = new google.maps.LatLng(44.856474, -93.241643);
     var myOptions = {
-        zoom: 15,
+        zoom: 23,
         center: $latlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
@@ -82,25 +82,52 @@ function initialize() {
 function disableAllRectangle()
 {
     rectangleArr.forEach(function (rectangle) {
-        rectangle.editable = false;
-        rectangle.draggable = false;
+        rectangle.setEditable(false);
+        rectangle.setDraggable(false);
     });
 }
 
 function enableAllRectangle()
 {
     rectangleArr.forEach(function (rectangle) {
-        rectangle.editable = true;
-        rectangle.draggable = true;
+        rectangle.setEditable(true);
+        rectangle.setDraggable(true);
     });
 }
 
 function disableAllCircle()
 {
     circleArr.forEach(function (circle) {
-        circle.editable = false;
-        circle.draggable = false;
+        circle.setEditable(false);
+        circle.setDraggable(false);
     });
+}
+
+function enableAllCircle()
+{
+    circleArr.forEach(function (circle) {
+        circle.setEditable(true);
+        circle.setDraggable(true);
+    });
+}
+
+function disableCircleExceptCurrent(currentCircle)
+{
+    disableAllCircle();
+    disableAllRectangle();
+    //alert('xxx');
+    currentCircle.setEditable(true);
+    currentCircle.setDraggable(true);
+}
+
+function disableRectangleExceptCurrent(currentRectangle)
+{
+    disableAllCircle();
+    disableAllRectangle();
+    //alert('xxx');
+    currentRectangle.setEditable(true);
+    currentRectangle.setDraggable(true);
+
 }
 
 function placeCircle(location, type) {
@@ -122,15 +149,31 @@ function placeCircle(location, type) {
             map: $map,
             //position: location,
             center: location,
-            radius: 60,
-            editable: true,
-            draggable: true,
+            radius: 3,
+            editable: false,
+            draggable: false,
             zIndex: circleZIndex++,
         });
         cityCircle.set('id', cuniq());
         cityCircle.set('type', type);
         circleArr.push(cityCircle);
         saveCirle(cityCircle);
+
+        google.maps.event.addListener(cityCircle, 'click', function ()
+        {
+            disableCircleExceptCurrent(cityCircle);
+        });
+
+        google.maps.event.addListener(cityCircle, 'dragstart', function ()
+        {
+            disableCircleExceptCurrent(cityCircle);
+            //disableCircleExceptCurrent(cityCircle);
+//            disableAllCircle();
+//            disableAllRectangle();
+//            cityCircle.editable = true;
+//            cityCircle.draggable = true;
+        });
+
         google.maps.event.addListener(cityCircle, 'center_changed', function ()
         {
             //console.log(cityCircle.getCenter());
@@ -145,6 +188,11 @@ function placeCircle(location, type) {
             saveCirle(cityCircle);
         });
     }
+}
+
+function placeImage()
+{
+    var imageOverlay = new google.maps.im
 }
 
 function placeRectangle(north, south, east, west, type)
@@ -165,8 +213,8 @@ function placeRectangle(north, south, east, west, type)
             west: west,
         },
         //radius: 60,
-        editable: true,
-        draggable: true,
+        editable: false,
+        draggable: false,
         zIndex: -1000
     });
     rectangleArr.push(cityRectangle);
@@ -179,19 +227,24 @@ function placeRectangle(north, south, east, west, type)
     {
         //saveRectangle(cityRectangle);
     });
-    
+
+    google.maps.event.addListener(cityRectangle, 'click', function ()
+    {
+        //saveRectangle(cityRectangle);
+        disableRectangleExceptCurrent(cityRectangle);
+    });
+
     google.maps.event.addListener(cityRectangle, 'dragstart', function ()
     {
-        //disableAllRectangle();
-        //saveRectangle(cityRectangle);
-        //console.log(cityRectangle.getBounds().getNorthEast().lat());
+        disableRectangleExceptCurrent(cityRectangle);
     });
-    
+
     google.maps.event.addListener(cityRectangle, 'dragend', function ()
     {
 
         saveRectangle(cityRectangle);
-        //enableAllRectangle();
+//        enableAllRectangle();
+//        enableAllCircle();
         //console.log(cityRectangle.getBounds().getNorthEast().lat());
     });
 
